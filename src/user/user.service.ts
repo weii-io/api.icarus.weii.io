@@ -18,7 +18,8 @@ export class UserService {
     this.prisma.user
       .create({
         data: {
-          ...dto,
+          email: dto.email,
+          password: dto.password,
           username: username,
         },
       })
@@ -28,7 +29,7 @@ export class UserService {
       .catch((error) => {
         if (error.code === 'P2002') {
           return new Error('Email already exist');
-        }
+        } else throw new Error(error);
       });
   }
 }

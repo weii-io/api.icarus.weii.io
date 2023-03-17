@@ -6,9 +6,9 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "db:test:rm": "docker compose rm test-db -s -f -v",
-    "db:test:up": "docker compose up test-db -d",
-    "db:test:restart": "yarn db:test:rm && yarn db:test:up && sleep 1 && yarn prisma:test:deploy",
+    "db:test:rm": "docker compose rm icarus -s -f -v",
+    "db:test:up": "docker compose up icarus -d",
+    "db:test:restart": "yarn db:test:rm && yarn db:test:up && sleep 5 && yarn prisma:test:deploy",
     "db:dev:restart": "yarn prisma:test:deploy",
     "prisma:test:deploy": "dotenv -e .env.test -- prisma migrate deploy",
     "build": "nest build",

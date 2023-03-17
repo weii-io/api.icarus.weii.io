@@ -1,14 +1,14 @@
 version: "3.9"
 
 services:
-  test-db:
+  icarus:
     image: postgres:13
     restart: always
+    ports:
+      - "9999:5432"
     environment:
-      POSTGRES_USER: meow
+      POSTGRES_USER: uicarus
       POSTGRES_PASSWORD: meow
       POSTGRES_DB: icarus
-    ports:
-      - "5436:5432"
     volumes:
       - ./data:/var/lib/postgresql/data

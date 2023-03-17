@@ -6,13 +6,13 @@ import {
 } from 'class-validator';
 
 export class CreateUserDto {
-  @IsEmail()
-  @IsString()
   @IsNotEmpty()
+  @IsString()
+  @IsEmail()
   email: string;
 
-  @IsStrongPassword()
-  @IsString()
   @IsNotEmpty()
+  @IsString()
+  @IsStrongPassword()
   password: string;
 }
