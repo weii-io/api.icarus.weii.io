@@ -55,7 +55,10 @@ describe('Auth Module (e2e)', () => {
         .spec()
         .post('/auth/login')
         .withBody(payload)
-        .expectStatus(200);
+        .expectCookiesLike({
+          access_token:
+            /^eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9\.[a-zA-Z0-9\-_]+\.[a-zA-Z0-9\-_]+$/,
+        });
     });
   });
 });

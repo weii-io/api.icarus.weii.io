@@ -30,7 +30,8 @@ export class UserService {
       .catch((error) => {
         if (error.code === 'P2002') {
           return new Error('Email already exist');
-        } else throw new Error(error);
+        }
+        throw new Error(error);
       });
   }
 }
