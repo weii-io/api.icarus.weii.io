@@ -6,10 +6,10 @@ import {
   Post,
   Res,
 } from '@nestjs/common';
-import { CreateUserDto } from '../user/dto/create-user.dto';
 import { AuthService } from './auth.service';
-import { LoginUserDto } from './dto/login-user.dto';
 import { Response } from 'express';
+import { CreateUserDto } from '../user/dto';
+import { LoginUserDto } from './dto';
 
 @Controller('auth')
 export class AuthController {

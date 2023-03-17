@@ -1,8 +1,8 @@
 import { Global, Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { CreateUserDto } from './dto/create-user.dto';
-import { chance } from '../lib/chance';
 import * as argon2 from 'argon2';
+import { chance } from '../lib';
+import { CreateUserDto } from './dto';
 
 @Global()
 @Injectable()
@@ -25,6 +25,7 @@ export class UserService {
         },
       })
       .then((newUser) => {
+        delete newUser.password;
         return newUser;
       })
       .catch((error) => {

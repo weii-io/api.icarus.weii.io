@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { CreateUserDto } from '../user/dto/create-user.dto';
-import { UserService } from '../user/user.service';
-import { LoginUserDto } from './dto/login-user.dto';
 import { PrismaService } from '../prisma/prisma.service';
 import * as argon2 from 'argon2';
 import * as jwt from 'jsonwebtoken';
+import { UserService } from '../user/user.service';
+import { CreateUserDto } from '../user/dto';
+import { LoginUserDto } from './dto';
 
 @Injectable()
 export class AuthService {
