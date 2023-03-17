@@ -2,6 +2,7 @@ import { Global, Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { chance } from '../lib/chance';
+import * as argon2 from 'argon2';
 
 @Global()
 @Injectable()
@@ -19,7 +20,7 @@ export class UserService {
       .create({
         data: {
           email: dto.email,
-          password: dto.password,
+          password: await argon2.hash(dto.password),
           username: username,
         },
       })

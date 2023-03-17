@@ -29,10 +29,15 @@ describe('Auth Module (e2e)', () => {
   });
 
   describe('Auth', () => {
+    const mockUserCredentials = {
+      email: 'test@test.com',
+      password: 'Test@12345',
+    };
+
     it('should register user', async () => {
       const payload = {
-        email: 'test@test.com',
-        password: 'Test@12345',
+        email: mockUserCredentials.email,
+        password: mockUserCredentials.password,
       };
       await pactum
         .spec()
@@ -41,13 +46,16 @@ describe('Auth Module (e2e)', () => {
         .expectStatus(201);
     });
 
-    it('should find newly created user', async () => {
-      const user = await prisma.user.findUnique({
-        where: {
-          email: 'test@test.com',
-        },
-      });
-      expect(user.email).toEqual('test@test.com');
+    it('should login user', async () => {
+      const payload = {
+        email: mockUserCredentials.email,
+        password: mockUserCredentials.password,
+      };
+      await pactum
+        .spec()
+        .post('/auth/login')
+        .withBody(payload)
+        .expectStatus(200);
     });
   });
 });
