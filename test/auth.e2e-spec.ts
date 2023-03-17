@@ -31,8 +31,8 @@ describe('Auth Module (e2e)', () => {
   describe('Auth', () => {
     it('should register user', async () => {
       const payload = {
-        email: 'test@gmail.com',
-        password: 'test',
+        email: 'test@test.com',
+        password: 'Test@12345',
       };
       await pactum
         .spec()
@@ -41,13 +41,13 @@ describe('Auth Module (e2e)', () => {
         .expectStatus(201);
     });
 
-    // it('should find newly created user', async () => {
-    //   const users = await prisma.user.findUnique({
-    //     where: {
-    //       email: 'test@test.com',
-    //     },
-    //   });
-    //   expect(users.email).toEqual('test@test.com');
-    // });
+    it('should find newly created user', async () => {
+      const user = await prisma.user.findUnique({
+        where: {
+          email: 'test@test.com',
+        },
+      });
+      expect(user.email).toEqual('test@test.com');
+    });
   });
 });
