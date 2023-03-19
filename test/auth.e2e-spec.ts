@@ -3,7 +3,6 @@ import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { PrismaService } from '../src/prisma/prisma.service';
 import { AppModule } from '../src/app.module';
 import * as pactum from 'pactum';
-import { Response } from 'express';
 
 describe('Auth Module (e2e)', () => {
   let app: INestApplication;
