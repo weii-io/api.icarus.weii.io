@@ -3,6 +3,7 @@ import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { PrismaService } from '../src/prisma/prisma.service';
 import { AppModule } from '../src/app.module';
 import * as pactum from 'pactum';
+import { Response } from 'express';
 
 describe('Auth Module (e2e)', () => {
   let app: INestApplication;
@@ -34,6 +35,8 @@ describe('Auth Module (e2e)', () => {
       password: 'Test@12345',
     };
 
+    let jwt: string;
+
     it('should register user', async () => {
       const payload = {
         email: mockUserCredentials.email,
@@ -46,19 +49,47 @@ describe('Auth Module (e2e)', () => {
         .expectStatus(201);
     });
 
-    it('should login user', async () => {
+    it('should return cookie when login user', async () => {
       const payload = {
         email: mockUserCredentials.email,
         password: mockUserCredentials.password,
       };
+
       await pactum
         .spec()
         .post('/auth/login')
         .withBody(payload)
         .expectCookiesLike({
-          access_token:
-            /^eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9\.[a-zA-Z0-9\-_]+\.[a-zA-Z0-9\-_]+$/,
+          jwt: /^eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9\.[a-zA-Z0-9\-_]+\.[a-zA-Z0-9\-_]+$/,
         });
+    });
+
+    it('should store access cookies', async () => {
+      const payload = {
+        email: mockUserCredentials.email,
+        password: mockUserCredentials.password,
+      };
+
+      jwt = await pactum
+        .spec()
+        .post('/auth/login')
+        .withBody(payload)
+        .returns((ctx) => {
+          return ctx.res.headers['set-cookie'][0];
+        });
+      expect(jwt).toBeDefined();
+    });
+
+    it('should return user details', async () => {
+      await pactum
+        .spec()
+        .get('/users/me')
+        .withHeaders('set-cookie', [jwt])
+        .expectStatus(200);
+    });
+
+    it('should throw unauthorized error', async () => {
+      await pactum.spec().get('/users/me').expectStatus(401);
     });
   });
 });
