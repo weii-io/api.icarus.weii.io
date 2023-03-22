@@ -153,8 +153,8 @@ describe('Auth Module (e2e)', () => {
         .expectStatus(200);
     });
 
-    // it('should throw unauthorized error', async () => {
-    //   await pactum.spec().get('/users/me').expectStatus(401);
-    // });
+    it('should throw unauthorized error', async () => {
+      await pactum.spec().get('/users/me').expectStatus(401);
+    });
   });
 });

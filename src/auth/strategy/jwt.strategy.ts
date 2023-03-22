@@ -17,6 +17,8 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
         (request: Request) => {
+          if (!request.headers['cookie'])
+            throw new UnauthorizedException(ERROR.INVALID_COOKIE);
           const cookies = cookie.parse(request.headers['cookie']);
           if (!cookies) {
             throw new UnauthorizedException(ERROR.INVALID_COOKIE);
