@@ -3,7 +3,6 @@ import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { PrismaService } from '../src/prisma/prisma.service';
 import { AppModule } from '../src/app.module';
 import * as pactum from 'pactum';
-import * as cookieParser from 'cookie-parser';
 
 describe('Auth Module (e2e)', () => {
   let app: INestApplication;
@@ -19,7 +18,6 @@ describe('Auth Module (e2e)', () => {
         whitelist: true,
       }),
     );
-    app.use(cookieParser());
     prisma = app.get(PrismaService);
     await prisma.cleanDB();
     await app.listen(process.env.PORT_NUMBER);
@@ -151,7 +149,7 @@ describe('Auth Module (e2e)', () => {
       await pactum
         .spec()
         .get('/users/me')
-        .withHeaders('set-cookie', [access_token, refresh_token])
+        .withHeaders('cookie', [access_token, refresh_token])
         .expectStatus(200);
     });
 

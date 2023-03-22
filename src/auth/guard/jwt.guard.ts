@@ -12,21 +12,21 @@ export class JwtGuard extends AuthGuard('jwt') {
 
   handleRequest(err: any, user: any, _info: any, context: ExecutionContext) {
     // You can throw an exception based on either "info" or "err" arguments
-    if (err || !user) {
-      throw err || new UnauthorizedException();
+    if (err || _info || !user) {
+      throw err || _info || new UnauthorizedException();
     }
 
     // check if the access token is expired
     const request = context.switchToHttp().getRequest();
-    const cookies = request.headers['set-cookie'];
+    const cookies = cookie.parse(request.headers['cookie']);
     if (!cookies) {
       throw new UnauthorizedException(ERROR.INVALID_COOKIE);
     }
-    const raw_access_token = cookie.parse(cookies[0])['x-access'];
+    const raw_access_token = cookies['x-access'];
     const decoded_access_token = jwt.decode(raw_access_token) as jwt.JwtPayload;
     if (tokenIsExpired(decoded_access_token.exp)) {
       // check if the refresh token is expired
-      const raw_refresh_token = cookie.parse(cookies[1])['x-refresh'];
+      const raw_refresh_token = cookies['x-refresh'];
       const decoded_refresh_token = jwt.decode(
         raw_refresh_token,
       ) as jwt.JwtPayload;
@@ -43,13 +43,12 @@ export class JwtGuard extends AuthGuard('jwt') {
         },
       );
       request.res.setHeader(
-        'set-cookie',
+        'cookie',
         cookie.serialize('x-access', new_access_token, {
           httpOnly: true,
         }),
       );
     }
-
     return user;
   }
 }

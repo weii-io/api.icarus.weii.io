@@ -31,6 +31,6 @@ export class AuthController {
     res.cookie('x-refresh', refresh_token, {
       httpOnly: true,
     });
-    return res.send(true);
+    return res.send();
   }
 }

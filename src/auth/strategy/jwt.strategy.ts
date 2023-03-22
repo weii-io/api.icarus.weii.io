@@ -1,4 +1,8 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { Request } from 'express';
 import { Strategy, ExtractJwt } from 'passport-jwt';
@@ -13,16 +17,16 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
         (request: Request) => {
-          const cookies = request.headers['set-cookie'];
+          const cookies = cookie.parse(request.headers['cookie']);
           if (!cookies) {
-            return null;
+            throw new UnauthorizedException(ERROR.INVALID_COOKIE);
           }
-          const access_token = cookie.parse(cookies[0])['x-access'];
+          const access_token = cookies['x-access'];
           return access_token;
         },
       ]),
       secretOrKey: process.env.ACCESS_TOKEN_SECRET,
-      ignoreExpiration: false,
+      ignoreExpiration: true,
     });
   }
 

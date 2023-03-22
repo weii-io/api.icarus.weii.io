@@ -9,6 +9,7 @@ async function bootstrap() {
       whitelist: true,
     }),
   );
-  await app.listen(process.env.SERVER_PORT);
+  console.log('Server is running on port: ' + process.env.PORT_NUMBER);
+  await app.listen(process.env.PORT_NUMBER);
 }
 bootstrap();
