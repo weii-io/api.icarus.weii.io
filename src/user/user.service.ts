@@ -48,6 +48,11 @@ export class UserService {
       return new ForbiddenException(ERROR.ACCESS_DENIED);
     }
 
+    // if there is password hash it
+    if (dto.password) {
+      dto.password = await argon2.hash(dto.password);
+    }
+
     return this.prisma.user.update({
       where: { id: userId },
       data: {

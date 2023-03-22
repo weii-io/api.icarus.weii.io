@@ -7,4 +7,4 @@ import { ProjectService } from './project.service';
   controllers: [ProjectController],
   providers: [ProjectService],
 })
-export class TaskModule {}
+export class ProjectModule {}
