@@ -12,7 +12,6 @@ import { JwtGuard } from '../auth/guard';
 import { ProjectService } from './project.service';
 import { GetUser } from '../auth/decorator';
 import { CreateProjectDto, UpdateProjectDto } from './dto';
-import { IUserCtx } from '../interface';
 
 //TODO: add controller
 @Controller('projects')

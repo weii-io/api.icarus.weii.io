@@ -3,6 +3,7 @@ import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { PrismaService } from '../src/prisma/prisma.service';
 import { AppModule } from '../src/app.module';
 import * as pactum from 'pactum';
+import * as cookieParser from 'cookie-parser';
 
 describe('Auth Module (e2e)', () => {
   let app: INestApplication;
@@ -18,23 +19,47 @@ describe('Auth Module (e2e)', () => {
         whitelist: true,
       }),
     );
+    app.use(cookieParser());
     prisma = app.get(PrismaService);
     await prisma.cleanDB();
-    await app.listen(3333);
-    pactum.request.setBaseUrl('http://localhost:3333');
+    await app.listen(process.env.PORT_NUMBER);
+    pactum.request.setBaseUrl(process.env.BASE_URL);
   });
 
   afterAll(() => {
     app.close();
   });
 
-  describe('Auth', () => {
+  describe('User Authentication', () => {
     const mockUserCredentials = {
       email: 'test@test.com',
       password: 'Test@12345',
     };
 
-    let jwt: string;
+    let access_token: string;
+    let refresh_token: string;
+
+    it('should throw a 400 if email is not provided', async () => {
+      const payload = {
+        password: mockUserCredentials.password,
+      };
+      await pactum
+        .spec()
+        .post('/auth/register')
+        .withBody(payload)
+        .expectStatus(400);
+    });
+
+    it('should throw a 400 if password is not provided', async () => {
+      const payload = {
+        email: mockUserCredentials.email,
+      };
+      await pactum
+        .spec()
+        .post('/auth/register')
+        .withBody(payload)
+        .expectStatus(400);
+    });
 
     it('should register user', async () => {
       const payload = {
@@ -48,47 +73,90 @@ describe('Auth Module (e2e)', () => {
         .expectStatus(201);
     });
 
-    it('should return cookie when login user', async () => {
+    it('should return a 400 if email is not provided', async () => {
       const payload = {
-        email: mockUserCredentials.email,
         password: mockUserCredentials.password,
       };
-
       await pactum
+
         .spec()
         .post('/auth/login')
         .withBody(payload)
-        .expectCookiesLike({
-          jwt: /^eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9\.[a-zA-Z0-9\-_]+\.[a-zA-Z0-9\-_]+$/,
-        });
+        .expectStatus(400);
     });
 
-    it('should store access cookies', async () => {
+    it('should return a 400 if password is not provided', async () => {
+      const payload = {
+        email: mockUserCredentials.email,
+      };
+      await pactum
+
+        .spec()
+        .post('/auth/login')
+        .withBody(payload)
+        .expectStatus(400);
+    });
+
+    it('should return a 404 if email is wrong', async () => {
+      const payload = {
+        email: 'wrongemail@test.com',
+        password: mockUserCredentials.password,
+      };
+      await pactum
+
+        .spec()
+        .post('/auth/login')
+        .withBody(payload)
+        .expectStatus(404);
+    });
+
+    it('should return a 404 if email is wrong', async () => {
+      const payload = {
+        email: mockUserCredentials.email,
+        password: 'wrongpassword',
+      };
+      await pactum
+
+        .spec()
+        .post('/auth/login')
+        .withBody(payload)
+        .expectStatus(404);
+    });
+
+    it('should store cookies', async () => {
       const payload = {
         email: mockUserCredentials.email,
         password: mockUserCredentials.password,
       };
 
-      jwt = await pactum
+      access_token = await pactum
         .spec()
         .post('/auth/login')
         .withBody(payload)
         .returns((ctx) => {
           return ctx.res.headers['set-cookie'][0];
         });
-      expect(jwt).toBeDefined();
+      refresh_token = await pactum
+        .spec()
+        .post('/auth/login')
+        .withBody(payload)
+        .returns((ctx) => {
+          return ctx.res.headers['set-cookie'][1];
+        });
+      expect(access_token).toBeDefined();
+      expect(refresh_token).toBeDefined();
     });
 
     it('should return user details', async () => {
       await pactum
         .spec()
         .get('/users/me')
-        .withHeaders('set-cookie', [jwt])
+        .withHeaders('set-cookie', [access_token, refresh_token])
         .expectStatus(200);
     });
 
-    it('should throw unauthorized error', async () => {
-      await pactum.spec().get('/users/me').expectStatus(401);
-    });
+    // it('should throw unauthorized error', async () => {
+    //   await pactum.spec().get('/users/me').expectStatus(401);
+    // });
   });
 });

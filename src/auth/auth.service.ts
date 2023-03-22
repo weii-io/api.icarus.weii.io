@@ -1,16 +1,18 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import * as argon2 from 'argon2';
-import * as jwt from 'jsonwebtoken';
 import { UserService } from '../user/user.service';
 import { CreateUserDto } from '../user/dto';
 import { LoginUserDto } from './dto';
+import { TokenService } from './token/token.service';
+import * as argon2 from 'argon2';
+import { ERROR, TokenType } from '../enum';
 
 @Injectable()
 export class AuthService {
   constructor(
     private userService: UserService,
-    private prisma: PrismaService,
+    private prismaService: PrismaService,
+    private tokenService: TokenService,
   ) {}
 
   async register(dto: CreateUserDto) {
@@ -18,32 +20,33 @@ export class AuthService {
   }
 
   async login(dto: LoginUserDto) {
-    const _user = await this.prisma.user.findFirst({
+    const _user = await this.prismaService.user.findFirst({
       where: { email: dto.email },
     });
 
     if (!_user) {
-      return new Error('Invalid credentials');
+      throw new NotFoundException(ERROR.INVALID_CREDENTIALS);
     }
 
     const passwordMatch = await argon2.verify(_user.password, dto.password);
 
     if (!passwordMatch) {
-      return new Error('Invalid credentials');
+      throw new NotFoundException(ERROR.INVALID_CREDENTIALS);
     }
 
-    const token = jwt.sign(
-      {
+    return {
+      access_token: this.tokenService.generateToken(TokenType.ACCESS, {
         id: _user.id,
         username: _user.username,
         email: _user.email,
-      },
-      process.env.JWT_SECRET,
-      {
-        expiresIn: '1d',
-      },
-    );
-
-    return token;
+        hash: _user.password,
+      }),
+      refresh_token: this.tokenService.generateToken(TokenType.REFRESH, {
+        id: _user.id,
+        username: _user.username,
+        email: _user.email,
+        hash: _user.password,
+      }),
+    };
   }
 }

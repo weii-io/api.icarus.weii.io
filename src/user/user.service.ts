@@ -1,8 +1,14 @@
-import { Global, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  Global,
+  Injectable,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import * as argon2 from 'argon2';
 import { chance } from '../lib';
-import { CreateUserDto } from './dto';
+import { CreateUserDto, UpdateUserDto } from './dto';
+import { ERROR } from '../enum';
 
 @Global()
 @Injectable()
@@ -30,9 +36,32 @@ export class UserService {
       })
       .catch((error) => {
         if (error.code === 'P2002') {
-          return new Error('Email already exist');
+          return new BadRequestException(ERROR.EMAIL_EXISTS);
         }
-        throw new Error(error);
+        throw new BadRequestException(error);
       });
+  }
+
+  async updateUserById(userId: number, dto: UpdateUserDto) {
+    const _user = await this.prisma.user.findFirst({ where: { id: userId } });
+    if (!_user || _user.id !== userId) {
+      return new ForbiddenException(ERROR.ACCESS_DENIED);
+    }
+
+    return this.prisma.user.update({
+      where: { id: userId },
+      data: {
+        ...dto,
+      },
+    });
+  }
+
+  async deleteUserById(userId: number) {
+    const _user = await this.prisma.user.findFirst({ where: { id: userId } });
+    if (!_user || _user.id !== userId) {
+      return new ForbiddenException('Access to resources denied');
+    }
+
+    return this.prisma.user.delete({ where: { id: userId } });
   }
 }

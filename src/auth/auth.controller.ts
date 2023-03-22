@@ -15,6 +15,7 @@ import { LoginUserDto } from './dto';
 export class AuthController {
   constructor(private authService: AuthService) {}
 
+  @HttpCode(HttpStatus.CREATED)
   @Post('register')
   register(@Body() dto: CreateUserDto) {
     return this.authService.register(dto);
@@ -23,8 +24,11 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @Post('login')
   async login(@Res() res: Response, @Body() dto: LoginUserDto) {
-    const token = await this.authService.login(dto);
-    res.cookie('jwt', token, {
+    const { access_token, refresh_token } = await this.authService.login(dto);
+    res.cookie('x-access', access_token, {
+      httpOnly: true,
+    });
+    res.cookie('x-refresh', refresh_token, {
       httpOnly: true,
     });
     return res.send(true);
