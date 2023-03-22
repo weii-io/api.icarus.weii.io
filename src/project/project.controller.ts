@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   ParseIntPipe,
@@ -13,7 +14,6 @@ import { ProjectService } from './project.service';
 import { GetUser } from '../auth/decorator';
 import { CreateProjectDto, UpdateProjectDto } from './dto';
 
-//TODO: add controller
 @Controller('projects')
 export class ProjectController {
   constructor(private projectService: ProjectService) {}
@@ -54,7 +54,7 @@ export class ProjectController {
   }
 
   // user should be able to delete a project using id
-  @Get(':id')
+  @Delete(':id')
   @UseGuards(JwtGuard)
   deleteProjectById(
     @GetUser('id') userId: number,

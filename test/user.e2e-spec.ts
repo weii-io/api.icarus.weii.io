@@ -30,26 +30,26 @@ describe('User Module (e2e)', () => {
   });
 
   describe('CRUD', () => {
-    const mockUserCredentials = {
+    const user = {
       email: 'test@test.com',
       password: 'Test@12345',
     };
     let credential_cookie: string;
 
     it('should initialize user', async () => {
-      credential_cookie = await initUser(pactum, mockUserCredentials);
+      credential_cookie = await initUser(pactum, user);
       expect(credential_cookie).toBeDefined();
     });
 
     it('should update user email', async () => {
-      mockUserCredentials.email = 'update@update.com';
+      user.email = 'update@update.com';
 
       await pactum
         .spec()
         .patch('/users/me')
         .withHeaders('cookie', credential_cookie)
         .withBody({
-          email: mockUserCredentials.email,
+          email: user.email,
         })
         .expectStatus(200);
     });
@@ -63,7 +63,7 @@ describe('User Module (e2e)', () => {
     });
 
     it('should relogin user and give them a new cookie', async () => {
-      credential_cookie = await loginUser(pactum, mockUserCredentials);
+      credential_cookie = await loginUser(pactum, user);
       expect(credential_cookie).toBeDefined();
     });
 
@@ -76,11 +76,7 @@ describe('User Module (e2e)', () => {
     });
 
     it('should not be able to login user since user does not exist', async () => {
-      await pactum
-        .spec()
-        .post('/auth/login')
-        .withBody(mockUserCredentials)
-        .expectStatus(404);
+      await pactum.spec().post('/auth/login').withBody(user).expectStatus(404);
     });
   });
 });

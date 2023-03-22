@@ -1,8 +1,12 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateProjectDto, UpdateProjectDto } from './dto';
+import { ERROR } from '../enum';
 
-//TODO: add service
 @Injectable()
 export class ProjectService {
   constructor(private prisma: PrismaService) {}
@@ -18,10 +22,9 @@ export class ProjectService {
   }
 
   // view project using id
-  getProjectById(userId: number, projectId: number) {
-    return this.prisma.project.findFirst({
+  async getProjectById(userId: number, projectId: number) {
+    const _project = await this.prisma.project.findFirst({
       where: {
-        ownerId: userId,
         id: projectId,
       },
       include: {
@@ -29,6 +32,13 @@ export class ProjectService {
         owner: true,
       },
     });
+
+    if (!_project) throw new NotFoundException(ERROR.RESOURCE_NOT_FOUND);
+
+    if (_project.ownerId !== userId)
+      throw new ForbiddenException(ERROR.ACCESS_DENIED);
+
+    return _project;
   }
 
   // view all projects
@@ -52,13 +62,14 @@ export class ProjectService {
   ) {
     const _project = await this.prisma.project.findFirst({
       where: {
-        ownerId: userId,
         id: projectId,
       },
     });
 
-    if (!_project || _project.ownerId !== userId)
-      throw new ForbiddenException('Access to resources denied');
+    if (!_project) throw new NotFoundException(ERROR.RESOURCE_NOT_FOUND);
+
+    if (_project.ownerId !== userId)
+      throw new ForbiddenException(ERROR.ACCESS_DENIED);
 
     return this.prisma.project.update({
       where: {
@@ -78,9 +89,10 @@ export class ProjectService {
       },
     });
 
-    // check if user owns the bookmark
-    if (!_project || _project.ownerId !== userId)
-      throw new ForbiddenException('Access to resources denied');
+    if (!_project) throw new NotFoundException(ERROR.RESOURCE_NOT_FOUND);
+
+    if (_project.ownerId !== userId)
+      throw new ForbiddenException(ERROR.ACCESS_DENIED);
 
     await this.prisma.project.delete({
       where: {

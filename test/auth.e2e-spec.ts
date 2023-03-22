@@ -29,7 +29,7 @@ describe('Auth Module (e2e)', () => {
   });
 
   describe('User Authentication', () => {
-    const mockUserCredentials = {
+    const user = {
       email: 'test@test.com',
       password: 'Test@12345',
     };
@@ -39,7 +39,7 @@ describe('Auth Module (e2e)', () => {
 
     it('should throw a 400 if email is not provided', async () => {
       const payload = {
-        password: mockUserCredentials.password,
+        password: user.password,
       };
       await pactum
         .spec()
@@ -50,7 +50,7 @@ describe('Auth Module (e2e)', () => {
 
     it('should throw a 400 if password is not provided', async () => {
       const payload = {
-        email: mockUserCredentials.email,
+        email: user.email,
       };
       await pactum
         .spec()
@@ -61,8 +61,8 @@ describe('Auth Module (e2e)', () => {
 
     it('should register user', async () => {
       const payload = {
-        email: mockUserCredentials.email,
-        password: mockUserCredentials.password,
+        email: user.email,
+        password: user.password,
       };
       await pactum
         .spec()
@@ -73,7 +73,7 @@ describe('Auth Module (e2e)', () => {
 
     it('should return a 400 if email is not provided', async () => {
       const payload = {
-        password: mockUserCredentials.password,
+        password: user.password,
       };
       await pactum
 
@@ -85,7 +85,7 @@ describe('Auth Module (e2e)', () => {
 
     it('should return a 400 if password is not provided', async () => {
       const payload = {
-        email: mockUserCredentials.email,
+        email: user.email,
       };
       await pactum
 
@@ -98,7 +98,7 @@ describe('Auth Module (e2e)', () => {
     it('should return a 404 if email is wrong', async () => {
       const payload = {
         email: 'wrongemail@test.com',
-        password: mockUserCredentials.password,
+        password: user.password,
       };
       await pactum
 
@@ -110,7 +110,7 @@ describe('Auth Module (e2e)', () => {
 
     it('should return a 404 if email is wrong', async () => {
       const payload = {
-        email: mockUserCredentials.email,
+        email: user.email,
         password: 'wrongpassword',
       };
       await pactum
@@ -123,8 +123,8 @@ describe('Auth Module (e2e)', () => {
 
     it('should store cookies', async () => {
       const payload = {
-        email: mockUserCredentials.email,
-        password: mockUserCredentials.password,
+        email: user.email,
+        password: user.password,
       };
 
       access_token = await pactum

@@ -10,6 +10,8 @@ export async function initUser(pactum, userPayload: IUser) {
 }
 
 export async function loginUser(pactum, userPayload: IUser) {
+  // prevent concurrency problems when running test
+  await pactum.sleep(1000);
   const credential_cookie = await pactum
     .spec()
     .post('/auth/login')
@@ -22,5 +24,7 @@ export async function loginUser(pactum, userPayload: IUser) {
 }
 
 export async function registerUser(pactum, userPayload: IUser) {
+  // prevent concurrency problems when running test
+  await pactum.sleep(1000);
   await pactum.spec().post('/auth/register').withBody(userPayload);
 }

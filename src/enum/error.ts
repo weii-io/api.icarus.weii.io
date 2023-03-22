@@ -5,4 +5,5 @@ export enum ERROR {
   INVALID_COOKIE = 'Invalid or no cookie',
   ACCESS_DENIED = 'Access to resource denied',
   EMAIL_EXISTS = 'Email already exists',
+  RESOURCE_NOT_FOUND = 'Resource not found',
 }

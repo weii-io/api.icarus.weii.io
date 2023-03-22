@@ -3,6 +3,7 @@ import {
   ForbiddenException,
   Global,
   Injectable,
+  NotFoundException,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import * as argon2 from 'argon2';
@@ -63,8 +64,10 @@ export class UserService {
 
   async deleteUserById(userId: number) {
     const _user = await this.prisma.user.findFirst({ where: { id: userId } });
+
+    if (!_user) throw new NotFoundException(ERROR.RESOURCE_NOT_FOUND);
     if (!_user || _user.id !== userId) {
-      return new ForbiddenException('Access to resources denied');
+      return new ForbiddenException(ERROR.ACCESS_DENIED);
     }
 
     return this.prisma.user.delete({ where: { id: userId } });
