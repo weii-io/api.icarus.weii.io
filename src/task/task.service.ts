@@ -7,13 +7,15 @@ import { CreateTaskDto, UpdateTaskDto } from './dto';
 import { PrismaService } from '../prisma/prisma.service';
 import { ERROR } from '../enum';
 
-//TODO: add service
 @Injectable()
 export class TaskService {
   constructor(private prisma: PrismaService) {}
   async createTask(userId: number, dto: CreateTaskDto) {
     const project = await this.prisma.project.findUnique({
       where: { id: dto.projectId },
+      include: {
+        members: true,
+      },
     });
 
     if (!project) {
@@ -34,6 +36,13 @@ export class TaskService {
       if (!assignee) {
         throw new NotFoundException(ERROR.RESOURCE_NOT_FOUND);
       }
+
+      // check if assignee is a member of the project
+      if (
+        project.members.filter((member) => member.id === assignee.id).length ===
+        0
+      )
+        throw new ForbiddenException(ERROR.ACCESS_DENIED);
 
       delete dto.assigneeEmail;
 

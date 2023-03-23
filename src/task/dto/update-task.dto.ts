@@ -1,6 +1,7 @@
 import {
   IsBoolean,
   IsDate,
+  IsEmail,
   IsNotEmpty,
   IsNumber,
   IsOptional,
@@ -30,5 +31,8 @@ export class UpdateTaskDto {
   @IsNumber()
   projectId: number;
 
-  //TODO: assign task to multiple member in project
+  @IsOptional()
+  @IsString()
+  @IsEmail()
+  assigneeEmail: string;
 }

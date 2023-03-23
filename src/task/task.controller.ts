@@ -17,7 +17,6 @@ import {
   UpdateTaskDto,
 } from './dto';
 
-//TODO: add controller
 @Controller('tasks')
 export class TaskController {
   constructor(private taskService: TaskService) {}

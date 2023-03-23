@@ -10,7 +10,6 @@ export class UpdateProjectDto {
   @IsOptional()
   description?: string;
 
-  //   TODO: allow the ability to add multiple members to project
   @IsOptional()
   @IsString()
   @IsEmail()
