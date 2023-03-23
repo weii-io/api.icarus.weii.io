@@ -1,4 +1,4 @@
-import { IsOptional, IsString, MaxLength } from 'class-validator';
+import { IsEmail, IsOptional, IsString, MaxLength } from 'class-validator';
 
 export class UpdateProjectDto {
   @IsString()
@@ -9,4 +9,10 @@ export class UpdateProjectDto {
   @MaxLength(200)
   @IsOptional()
   description?: string;
+
+  //   TODO: allow the ability to add multiple members to project
+  @IsOptional()
+  @IsString()
+  @IsEmail()
+  memberEmail: string;
 }

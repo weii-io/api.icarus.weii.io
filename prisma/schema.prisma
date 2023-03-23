@@ -1,4 +1,3 @@
-// Define your data model using Prisma Schema
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
@@ -9,12 +8,13 @@ generator client {
 }
 
 model User {
-  id       Int       @id @default(autoincrement())
-  username String    @unique
-  email    String    @unique
-  password String
-  projects Project[]
-  Task     Task[]
+  id             Int       @id @default(autoincrement())
+  username       String    @unique
+  email          String    @unique
+  password       String
+  projects       Project[] // Projects owned by the user
+  assignedTasks  Task[] // Tasks assigned to the user
+  projectsMember Project[] @relation("ProjectMember")
 }
 
 model Project {
@@ -24,6 +24,7 @@ model Project {
   tasks       Task[]
   owner       User    @relation(fields: [ownerId], references: [id], onDelete: Cascade)
   ownerId     Int
+  members     User[]  @relation("ProjectMember")
 }
 
 model Task {

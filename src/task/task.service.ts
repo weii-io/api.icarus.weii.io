@@ -1,5 +1,152 @@
-import { Injectable } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+import { CreateTaskDto, UpdateTaskDto } from './dto';
+import { PrismaService } from '../prisma/prisma.service';
+import { ERROR } from '../enum';
 
 //TODO: add service
 @Injectable()
-export class TaskService {}
+export class TaskService {
+  constructor(private prisma: PrismaService) {}
+  async createTask(userId: number, dto: CreateTaskDto) {
+    const project = await this.prisma.project.findUnique({
+      where: { id: dto.projectId },
+    });
+
+    if (!project) {
+      throw new NotFoundException(ERROR.RESOURCE_NOT_FOUND);
+    }
+
+    if (project.ownerId !== userId) {
+      throw new ForbiddenException(ERROR.ACCESS_DENIED);
+    }
+
+    if (dto.assigneeEmail) {
+      const assignee = await this.prisma.user.findFirst({
+        where: {
+          email: dto.assigneeEmail,
+        },
+      });
+
+      if (!assignee) {
+        throw new NotFoundException(ERROR.RESOURCE_NOT_FOUND);
+      }
+
+      delete dto.assigneeEmail;
+
+      return this.prisma.task.create({
+        data: {
+          ...dto,
+          assigneeId: assignee.id,
+        },
+      });
+    }
+
+    return this.prisma.task.create({
+      data: {
+        ...dto,
+      },
+    });
+  }
+
+  async getTasks(userId: number, projectId: number) {
+    const project = await this.prisma.project.findUnique({
+      where: { id: projectId },
+    });
+
+    if (!project) {
+      throw new NotFoundException(ERROR.RESOURCE_NOT_FOUND);
+    }
+
+    if (project.ownerId !== userId) {
+      throw new ForbiddenException(ERROR.ACCESS_DENIED);
+    }
+
+    return this.prisma.task.findMany({
+      where: {
+        projectId,
+      },
+    });
+  }
+
+  async getTaskById(userId: number, projectId: number, taskId: number) {
+    const task = await this.prisma.task.findUnique({
+      where: { id: taskId },
+      include: {
+        project: true,
+      },
+    });
+
+    if (!task) {
+      throw new NotFoundException(ERROR.RESOURCE_NOT_FOUND);
+    }
+
+    if (task.projectId !== projectId) {
+      throw new ForbiddenException(ERROR.ACCESS_DENIED);
+    }
+
+    if (task.project.ownerId !== userId) {
+      throw new ForbiddenException(ERROR.ACCESS_DENIED);
+    }
+
+    return task;
+  }
+
+  async updateTaskById(userId: number, taskId: number, dto: UpdateTaskDto) {
+    const task = await this.prisma.task.findUnique({
+      where: { id: taskId },
+      include: {
+        project: true,
+      },
+    });
+
+    if (!task) {
+      throw new NotFoundException(ERROR.RESOURCE_NOT_FOUND);
+    }
+
+    if (task.projectId !== dto.projectId) {
+      throw new ForbiddenException(ERROR.ACCESS_DENIED);
+    }
+
+    if (task.project.ownerId !== userId) {
+      throw new ForbiddenException(ERROR.ACCESS_DENIED);
+    }
+
+    return this.prisma.task.update({
+      where: {
+        id: taskId,
+      },
+      data: dto,
+    });
+  }
+
+  async deleteTaskById(userId: number, projectId: number, taskId: number) {
+    const task = await this.prisma.task.findUnique({
+      where: { id: taskId },
+      include: {
+        project: true,
+      },
+    });
+
+    if (!task) {
+      throw new NotFoundException(ERROR.RESOURCE_NOT_FOUND);
+    }
+
+    if (task.projectId !== projectId) {
+      throw new ForbiddenException(ERROR.ACCESS_DENIED);
+    }
+
+    if (task.project.ownerId !== userId) {
+      throw new ForbiddenException(ERROR.ACCESS_DENIED);
+    }
+
+    return this.prisma.task.delete({
+      where: {
+        id: taskId,
+      },
+    });
+  }
+}

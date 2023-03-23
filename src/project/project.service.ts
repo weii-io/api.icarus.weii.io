@@ -30,6 +30,7 @@ export class ProjectService {
       include: {
         tasks: true,
         owner: true,
+        members: true,
       },
     });
 
@@ -70,6 +71,31 @@ export class ProjectService {
 
     if (_project.ownerId !== userId)
       throw new ForbiddenException(ERROR.ACCESS_DENIED);
+
+    if (dto.memberEmail) {
+      const member = await this.prisma.user.findFirst({
+        where: {
+          email: dto.memberEmail,
+        },
+      });
+
+      if (!member) throw new NotFoundException(ERROR.RESOURCE_NOT_FOUND);
+
+      delete dto.memberEmail;
+      return this.prisma.project.update({
+        where: {
+          id: _project.id,
+        },
+        data: {
+          ...dto,
+          members: {
+            connect: {
+              id: member.id,
+            },
+          },
+        },
+      });
+    }
 
     return this.prisma.project.update({
       where: {
