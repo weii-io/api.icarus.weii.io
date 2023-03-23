@@ -157,7 +157,7 @@ describe('Project Module (e2e)', () => {
         });
     });
 
-    // place all test above this
+    // IMPORTANT: This test should be last since it deletes the project
     it('should delete user 1 project', async () => {
       await pactum
         .spec()
