@@ -8,7 +8,7 @@ import {
 import { PrismaService } from '../prisma/prisma.service';
 import * as argon2 from 'argon2';
 import { chance } from '../lib';
-import { CreateUserDto, UpdateUserDto } from './dto';
+import { CreateUserDto, UpdateUserByIdDto } from './dto';
 import { ERROR } from '../enum';
 
 @Global()
@@ -43,7 +43,7 @@ export class UserService {
       });
   }
 
-  async updateUserById(userId: number, dto: UpdateUserDto) {
+  async updateUserById(userId: number, dto: UpdateUserByIdDto) {
     const _user = await this.prisma.user.findFirst({ where: { id: userId } });
     if (!_user || _user.id !== userId) {
       return new ForbiddenException(ERROR.ACCESS_DENIED);
