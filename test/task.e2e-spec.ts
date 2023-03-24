@@ -111,7 +111,25 @@ describe('Task Module (e2e)', () => {
         .expectStatus(201);
     });
 
-    // TODO: show user 2 as an assignee of the task
+    it('should show user 2 as an assignee of the task', async () => {
+      await pactum
+        .spec()
+        .get('/tasks')
+        .withHeaders('cookie', user1_credential_cookie)
+        .withBody({
+          projectId: '$S{User1_FirstProjectId}',
+        })
+        .expectStatus(200)
+        .expectJsonLike([
+          {
+            name: 'Test Task User 1',
+            assignee: {
+              email: user2.email,
+            },
+          },
+        ]);
+    });
+
     // TODO: should not be able to delete the project since user 2 is a member
     // TODO: should be able to delete task
     // TODO: should be able to update task

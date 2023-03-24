@@ -78,6 +78,10 @@ export class TaskService {
       where: {
         projectId,
       },
+      include: {
+        project: true,
+        assignee: true,
+      },
     });
   }
 
@@ -86,6 +90,7 @@ export class TaskService {
       where: { id: taskId },
       include: {
         project: true,
+        assignee: true,
       },
     });
 
