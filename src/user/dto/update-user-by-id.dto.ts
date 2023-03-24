@@ -5,7 +5,7 @@ import {
   IsStrongPassword,
 } from 'class-validator';
 
-export class UpdateUserDto {
+export class UpdateUserByIdDto {
   @IsEmail()
   @IsString()
   @IsOptional()

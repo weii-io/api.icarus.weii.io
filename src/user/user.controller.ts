@@ -10,7 +10,7 @@ import { JwtGuard } from '../auth/guard';
 import { GetUser } from '../auth/decorator';
 import { IUserCtx } from '../interface';
 import { UserService } from './user.service';
-import { UpdateUserDto } from './dto';
+import { UpdateUserByIdDto } from './dto';
 
 @Controller('users')
 export class UserController {
@@ -24,7 +24,7 @@ export class UserController {
 
   @Patch('me')
   @UseGuards(JwtGuard)
-  updateMe(@GetUser('id') userId: number, @Body() dto: UpdateUserDto) {
+  updateMe(@GetUser('id') userId: number, @Body() dto: UpdateUserByIdDto) {
     return this.userService.updateUserById(userId, dto);
   }
 

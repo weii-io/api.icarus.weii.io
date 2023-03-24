@@ -7,8 +7,8 @@ services:
     ports:
       - "9999:5432"
     environment:
-      POSTGRES_USER: uicarus
-      POSTGRES_PASSWORD: meow
       POSTGRES_DB: icarus
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
     volumes:
       - ./data:/var/lib/postgresql/data
