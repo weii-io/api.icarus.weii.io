@@ -1,8 +1,10 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
+  ParseIntPipe,
   Patch,
   Post,
   UseGuards,
@@ -12,9 +14,10 @@ import { GetUser } from '../auth/decorator';
 import { JwtGuard } from '../auth/guard';
 import {
   CreateTaskDto,
+  DeleteTaskByIdDto,
   GetTaskByIdDto,
   GetTasksDto,
-  UpdateTaskDto,
+  UpdateTaskByIdDto,
 } from './dto';
 
 @Controller('tasks')
@@ -38,7 +41,7 @@ export class TaskController {
   getTaskById(
     @GetUser('id') userId: number,
     @Body() dto: GetTaskByIdDto,
-    @Param('id') taskId: number,
+    @Param('id', ParseIntPipe) taskId: number,
   ) {
     return this.taskService.getTaskById(userId, dto.projectId, taskId);
   }
@@ -47,9 +50,19 @@ export class TaskController {
   @UseGuards(JwtGuard)
   updateTaskById(
     @GetUser('id') userId: number,
-    @Body() dto: UpdateTaskDto,
-    @Param('id') taskId: number,
+    @Body() dto: UpdateTaskByIdDto,
+    @Param('id', ParseIntPipe) taskId: number,
   ) {
     return this.taskService.updateTaskById(userId, taskId, dto);
+  }
+
+  @Delete(':id')
+  @UseGuards(JwtGuard)
+  deleteTaskById(
+    @GetUser('id') userId: number,
+    @Body() dto: DeleteTaskByIdDto,
+    @Param('id', ParseIntPipe) taskId: number,
+  ) {
+    return this.taskService.deleteTaskById(userId, taskId, dto);
   }
 }

@@ -1,6 +1,6 @@
 import { IsEmail, IsOptional, IsString, MaxLength } from 'class-validator';
 
-export class UpdateProjectDto {
+export class UpdateProjectByIdDto {
   @IsString()
   @IsOptional()
   name?: string;
@@ -14,4 +14,8 @@ export class UpdateProjectDto {
   @IsString()
   @IsEmail()
   memberEmail: string;
+
+  @IsOptional()
+  @IsString()
+  removeMemberEmail: string;
 }

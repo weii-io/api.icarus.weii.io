@@ -9,7 +9,7 @@ import {
   MaxLength,
 } from 'class-validator';
 
-export class UpdateTaskDto {
+export class UpdateTaskByIdDto {
   @IsOptional()
   @IsString()
   name: string;
@@ -35,4 +35,9 @@ export class UpdateTaskDto {
   @IsString()
   @IsEmail()
   assigneeEmail: string;
+
+  @IsOptional()
+  @IsString()
+  @IsEmail()
+  removeAssigneeEmail: string;
 }

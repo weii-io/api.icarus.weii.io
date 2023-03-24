@@ -3,7 +3,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { CreateTaskDto, UpdateTaskDto } from './dto';
+import { CreateTaskDto, DeleteTaskByIdDto, UpdateTaskByIdDto } from './dto';
 import { PrismaService } from '../prisma/prisma.service';
 import { ERROR } from '../enum';
 
@@ -109,11 +109,15 @@ export class TaskService {
     return task;
   }
 
-  async updateTaskById(userId: number, taskId: number, dto: UpdateTaskDto) {
+  async updateTaskById(userId: number, taskId: number, dto: UpdateTaskByIdDto) {
     const task = await this.prisma.task.findUnique({
       where: { id: taskId },
       include: {
-        project: true,
+        project: {
+          include: {
+            members: true,
+          },
+        },
       },
     });
 
@@ -129,6 +133,65 @@ export class TaskService {
       throw new ForbiddenException(ERROR.ACCESS_DENIED);
     }
 
+    if (dto.assigneeEmail) {
+      const assignee = await this.prisma.user.findFirst({
+        where: {
+          email: dto.assigneeEmail,
+        },
+      });
+
+      if (!assignee) {
+        throw new NotFoundException(ERROR.RESOURCE_NOT_FOUND);
+      }
+
+      if (
+        task.project.members.filter((member) => member.id === assignee.id)
+          .length === 0
+      ) {
+        throw new ForbiddenException(ERROR.ACCESS_DENIED);
+      }
+
+      delete dto.assigneeEmail;
+
+      return this.prisma.task.update({
+        where: {
+          id: taskId,
+        },
+        data: {
+          ...dto,
+          assigneeId: assignee.id,
+        },
+      });
+    }
+
+    if (dto.removeAssigneeEmail) {
+      const assignee = await this.prisma.user.findFirst({
+        where: {
+          email: dto.removeAssigneeEmail,
+        },
+      });
+
+      if (!assignee) {
+        throw new NotFoundException(ERROR.RESOURCE_NOT_FOUND);
+      }
+
+      if (task.assigneeId !== assignee.id) {
+        throw new NotFoundException(ERROR.RESOURCE_NOT_FOUND);
+      }
+
+      delete dto.removeAssigneeEmail;
+
+      return this.prisma.task.update({
+        where: {
+          id: taskId,
+        },
+        data: {
+          ...dto,
+          assigneeId: null,
+        },
+      });
+    }
+
     return this.prisma.task.update({
       where: {
         id: taskId,
@@ -137,11 +200,12 @@ export class TaskService {
     });
   }
 
-  async deleteTaskById(userId: number, projectId: number, taskId: number) {
-    const task = await this.prisma.task.findUnique({
+  async deleteTaskById(userId: number, taskId: number, dto: DeleteTaskByIdDto) {
+    const task = await this.prisma.task.findFirst({
       where: { id: taskId },
       include: {
         project: true,
+        assignee: true,
       },
     });
 
@@ -149,7 +213,7 @@ export class TaskService {
       throw new NotFoundException(ERROR.RESOURCE_NOT_FOUND);
     }
 
-    if (task.projectId !== projectId) {
+    if (task.projectId !== dto.projectId) {
       throw new ForbiddenException(ERROR.ACCESS_DENIED);
     }
 

@@ -4,7 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { CreateProjectDto, UpdateProjectDto } from './dto';
+import { CreateProjectDto, UpdateProjectByIdDto } from './dto';
 import { ERROR } from '../enum';
 
 @Injectable()
@@ -59,7 +59,7 @@ export class ProjectService {
   async updateProjectById(
     userId: number,
     projectId: number,
-    dto: UpdateProjectDto,
+    dto: UpdateProjectByIdDto,
   ) {
     const _project = await this.prisma.project.findFirst({
       where: {
@@ -90,6 +90,31 @@ export class ProjectService {
           ...dto,
           members: {
             connect: {
+              id: member.id,
+            },
+          },
+        },
+      });
+    }
+
+    if (dto.removeMemberEmail) {
+      const member = await this.prisma.user.findFirst({
+        where: {
+          email: dto.removeMemberEmail,
+        },
+      });
+
+      if (!member) throw new NotFoundException(ERROR.RESOURCE_NOT_FOUND);
+
+      delete dto.removeMemberEmail;
+      return this.prisma.project.update({
+        where: {
+          id: _project.id,
+        },
+        data: {
+          ...dto,
+          members: {
+            disconnect: {
               id: member.id,
             },
           },

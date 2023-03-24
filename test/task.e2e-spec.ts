@@ -108,7 +108,8 @@ describe('Task Module (e2e)', () => {
           projectId: '$S{User1_FirstProjectId}',
           assigneeEmail: user2.email,
         })
-        .expectStatus(201);
+        .expectStatus(201)
+        .stores('User1_FirstProject_FirstTaskId', 'id');
     });
 
     it('should show user 2 as an assignee of the task', async () => {
@@ -130,8 +131,55 @@ describe('Task Module (e2e)', () => {
         ]);
     });
 
-    // TODO: should not be able to delete the project since user 2 is a member
-    // TODO: should be able to delete task
+    it('show throw a 403 error since user 2 is not the owner of the task', async () => {
+      await pactum
+        .spec()
+        .delete('/tasks/{id}')
+        .withPathParams('id', '$S{User1_FirstProject_FirstTaskId}')
+        .withBody({
+          projectId: '$S{User1_FirstProjectId}',
+        })
+        .withHeaders('cookie', user2_credential_cookie)
+        .expectStatus(403);
+    });
+
     // TODO: should be able to update task
+    it('should update the task', async () => {
+      await pactum
+        .spec()
+        .patch('/tasks/{id}')
+        .withPathParams('id', '$S{User1_FirstProject_FirstTaskId}')
+        .withBody({
+          name: 'Test Task User 1 Updated',
+          projectId: '$S{User1_FirstProjectId}',
+        })
+        .withHeaders('cookie', user1_credential_cookie)
+        .expectStatus(200);
+    });
+
+    it('should remove the assignee', async () => {
+      await pactum
+        .spec()
+        .patch('/tasks/{id}')
+        .withPathParams('id', '$S{User1_FirstProject_FirstTaskId}')
+        .withBody({
+          projectId: '$S{User1_FirstProjectId}',
+          removeAssigneeEmail: user2.email,
+        })
+        .withHeaders('cookie', user1_credential_cookie)
+        .expectStatus(200);
+    });
+
+    it('should delete the task', async () => {
+      await pactum
+        .spec()
+        .delete('/tasks/{id}')
+        .withPathParams('id', '$S{User1_FirstProject_FirstTaskId}')
+        .withBody({
+          projectId: '$S{User1_FirstProjectId}',
+        })
+        .withHeaders('cookie', user1_credential_cookie)
+        .expectStatus(200);
+    });
   });
 });

@@ -12,7 +12,7 @@ import {
 import { JwtGuard } from '../auth/guard';
 import { ProjectService } from './project.service';
 import { GetUser } from '../auth/decorator';
-import { CreateProjectDto, UpdateProjectDto } from './dto';
+import { CreateProjectDto, UpdateProjectByIdDto } from './dto';
 
 @Controller('projects')
 export class ProjectController {
@@ -48,7 +48,7 @@ export class ProjectController {
   updateProjectById(
     @GetUser('id') userId: number,
     @Param('id', ParseIntPipe) projectId: number,
-    @Body() dto: UpdateProjectDto,
+    @Body() dto: UpdateProjectByIdDto,
   ) {
     return this.projectService.updateProjectById(userId, projectId, dto);
   }
