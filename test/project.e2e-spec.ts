@@ -34,11 +34,15 @@ describe('Project Module (e2e)', () => {
       email: 'test@test.com',
       password: 'Test@12345',
       confirmPassword: 'Test@12345',
+      firstName: 'Test',
+      lastName: 'User',
     };
     const user2 = {
       email: 'test2@test2.com',
       password: 'Test@12345',
       confirmPassword: 'Test@12345',
+      firstName: 'Test',
+      lastName: 'User 2',
     };
     let user1_credential_cookie: string;
     let user2_credential_cookie: string;

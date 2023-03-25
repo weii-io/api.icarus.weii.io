@@ -32,6 +32,8 @@ export class UserService {
           email: dto.email,
           password: await argon2.hash(dto.password),
           username: username,
+          firstName: dto.firstName,
+          lastName: dto.lastName,
         },
       })
       .then((newUser) => {

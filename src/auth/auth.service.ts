@@ -40,12 +40,16 @@ export class AuthService {
         username: _user.username,
         email: _user.email,
         hash: _user.password,
+        firstName: _user.firstName,
+        lastName: _user.lastName,
       }),
       refresh_token: this.tokenService.generateToken(TokenType.REFRESH, {
         id: _user.id,
         username: _user.username,
         email: _user.email,
         hash: _user.password,
+        firstName: _user.firstName,
+        lastName: _user.lastName,
       }),
     };
   }

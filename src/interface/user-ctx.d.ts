@@ -3,4 +3,6 @@ export interface IUserCtx {
   username: string;
   email: string;
   hash: string;
+  firstName: string;
+  lastName: string;
 }
