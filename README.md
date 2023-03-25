@@ -52,13 +52,13 @@ To use the Icarus-API, you will need the following installed on your system:
 
 
 2. Open the `.env` file and add the following environment variables with appropriate values:
-PORT=3333
-DATEBASE_URL=<your_database_url>
-ACCESS_TOKEN_SECRET=<your_access_token_secret_key>
-ACCESS_TOKEN_TTL=<your_access_token_ttl>
-REFRESH_TOKEN_SECRET=<your_refresh_token_secret_key>
-REFRESH_TOKEN_TTL=<your_refresh_token_ttl>
-NODE_ENV="dev"
+- PORT=3333
+- DATEBASE_URL=<your_database_url>
+- ACCESS_TOKEN_SECRET=<your_access_token_secret_key>
+- ACCESS_TOKEN_TTL=<your_access_token_ttl>
+- REFRESH_TOKEN_SECRET=<your_refresh_token_secret_key>
+- REFRESH_TOKEN_TTL=<your_refresh_token_ttl>
+- NODE_ENV="dev"
 
 ### Testing
 
@@ -68,13 +68,13 @@ NODE_ENV="dev"
 2. Open `docker-compose.yaml` and modify the database name, username, password and port
 
 2. Open the `.env.test` file and add the following environment variables with appropriate values:
-PORT=3333
-DATEBASE_URL=postgresql://<database_username>:<database_password>@localhost:<database_port>/<database_name>?schema=public
-ACCESS_TOKEN_SECRET=<your_access_token_secret_key>
-ACCESS_TOKEN_TTL=<your_access_token_ttl>
-REFRESH_TOKEN_SECRET=<your_refresh_token_secret_key>
-REFRESH_TOKEN_TTL=<your_refresh_token_ttl>
-NODE_ENV="test"
+- PORT=3333
+- DATEBASE_URL=postgresql://<database_username>:<database_password>@localhost:<database_port>/<database_name>?schema=public
+- ACCESS_TOKEN_SECRET=<your_access_token_secret_key>
+- ACCESS_TOKEN_TTL=<your_access_token_ttl>
+- REFRESH_TOKEN_SECRET=<your_refresh_token_secret_key>
+- REFRESH_TOKEN_TTL=<your_refresh_token_ttl>
+- NODE_ENV="test"
 
 3. `npm run test:e2e`
 
