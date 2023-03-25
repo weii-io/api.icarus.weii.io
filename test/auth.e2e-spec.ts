@@ -32,6 +32,7 @@ describe('Auth Module (e2e)', () => {
     const user = {
       email: 'test@test.com',
       password: 'Test@12345',
+      confirmPassword: 'Test@12345',
     };
 
     let access_token: string;
@@ -63,6 +64,7 @@ describe('Auth Module (e2e)', () => {
       const payload = {
         email: user.email,
         password: user.password,
+        confirmPassword: user.confirmPassword,
       };
       await pactum
         .spec()

@@ -19,6 +19,5 @@ export class CreateUserDto {
 
   @IsNotEmpty()
   @IsString()
-  @Matches('password')
   confirmPassword: string;
 }

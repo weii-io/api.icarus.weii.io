@@ -1,6 +1,7 @@
 interface IUser {
   email: string;
   password: string;
+  confirmPassword: string;
 }
 export async function initUser(pactum, userPayload: IUser) {
   // register user

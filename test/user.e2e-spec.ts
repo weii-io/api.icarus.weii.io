@@ -33,6 +33,7 @@ describe('User Module (e2e)', () => {
     const user = {
       email: 'test@test.com',
       password: 'Test@12345',
+      confirmPassword: 'Test@12345',
     };
     let credential_cookie: string;
 
