@@ -16,6 +16,9 @@ import { ERROR } from '../enum';
 export class UserService {
   constructor(private prisma: PrismaService) {}
   async createUser(dto: CreateUserDto) {
+    if (dto.password !== dto.confirmPassword)
+      throw new BadRequestException(ERROR.PASSWORD_MISMATCH);
+
     let username = `${chance.word()}${chance.integer({ min: 0, max: 9999 })}`;
 
     // this might slow down the server but it ensures that the username is unique

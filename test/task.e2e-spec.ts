@@ -33,10 +33,12 @@ describe('Task Module (e2e)', () => {
     const user1 = {
       email: 'test@test.com',
       password: 'Test@12345',
+      confirmPassword: 'Test@12345',
     };
     const user2 = {
       email: 'test2@test2.com',
       password: 'Test@12345',
+      confirmPassword: 'Test@12345',
     };
     let user1_credential_cookie: string;
     let user2_credential_cookie: string;
