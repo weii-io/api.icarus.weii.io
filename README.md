@@ -67,7 +67,7 @@ To use the Icarus-API, you will need the following installed on your system:
 
 2. Open `docker-compose.yaml` and modify the database name, username, password and port
 
-2. Open the `.env.test` file and add the following environment variables with appropriate values:
+3. Open the `.env.test` file and add the following environment variables with appropriate values:
 - PORT=3333
 - DATEBASE_URL=postgresql://<database_username>:<database_password>@localhost:<database_port>/<database_name>?schema=public
 - ACCESS_TOKEN_SECRET=<your_access_token_secret_key>
@@ -76,7 +76,7 @@ To use the Icarus-API, you will need the following installed on your system:
 - REFRESH_TOKEN_TTL=<your_refresh_token_ttl>
 - NODE_ENV="test"
 
-3. `npm run test:e2e`
+4. `npm run test:e2e`
 
 ## Usage
 
