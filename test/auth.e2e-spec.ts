@@ -33,6 +33,8 @@ describe('Auth Module (e2e)', () => {
       email: 'test@test.com',
       password: 'Test@12345',
       confirmPassword: 'Test@12345',
+      firstName: 'Test',
+      lastName: 'User',
     };
 
     let access_token: string;
@@ -61,15 +63,10 @@ describe('Auth Module (e2e)', () => {
     });
 
     it('should register user', async () => {
-      const payload = {
-        email: user.email,
-        password: user.password,
-        confirmPassword: user.confirmPassword,
-      };
       await pactum
         .spec()
         .post('/auth/register')
-        .withBody(payload)
+        .withBody(user)
         .expectStatus(201);
     });
 
