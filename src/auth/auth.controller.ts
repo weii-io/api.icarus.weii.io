@@ -27,9 +27,13 @@ export class AuthController {
     const { access_token, refresh_token } = await this.authService.login(dto);
     res.cookie('x-access', access_token, {
       httpOnly: true,
+      sameSite: 'none',
+      secure: true,
     });
     res.cookie('x-refresh', refresh_token, {
       httpOnly: true,
+      sameSite: 'none',
+      secure: true,
     });
     return res.send();
   }

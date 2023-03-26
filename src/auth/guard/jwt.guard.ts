@@ -3,7 +3,7 @@ import { AuthGuard } from '@nestjs/passport';
 import * as cookie from 'cookie';
 import * as jwt from 'jsonwebtoken';
 import { ERROR } from '../../enum';
-import { tokenIsExpired } from '../../utils';
+import { createAccessToken, tokenIsExpired } from '../../utils';
 
 export class JwtGuard extends AuthGuard('jwt') {
   constructor() {
@@ -35,13 +35,9 @@ export class JwtGuard extends AuthGuard('jwt') {
       }
 
       // refresh the access token
-      const new_access_token = jwt.sign(
-        { id: user.id, email: user.email, hash: user.password },
-        process.env.JWT_SECRET,
-        {
-          expiresIn: process.env.JWT_ACCESS_EXPIRES_IN,
-        },
-      );
+      delete user.exp;
+      delete user.iat;
+      const new_access_token = createAccessToken(user);
       request.res.setHeader(
         'cookie',
         cookie.serialize('x-access', new_access_token, {
