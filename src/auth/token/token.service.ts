@@ -1,20 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { IUserCtx } from '../../interface';
-import * as jwt from 'jsonwebtoken';
 import { TokenType } from '../../enum';
+import { createAccessToken, createRefreshToken } from '../../utils';
 
 @Injectable()
 export class TokenService {
   generateToken(T: TokenType, payload: IUserCtx) {
     switch (T) {
       case TokenType.ACCESS:
-        return jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, {
-          expiresIn: process.env.ACCESS_TOKEN_TTL,
-        });
+        return createAccessToken(payload);
       case TokenType.REFRESH:
-        return jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET, {
-          expiresIn: process.env.REFRESH_TOKEN_TTL,
-        });
+        return createRefreshToken(payload);
     }
   }
 }

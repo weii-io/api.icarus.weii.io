@@ -26,6 +26,12 @@ export class UserService {
       username = `${chance.word()}${chance.integer({ min: 0, max: 9999 })}`;
     }
 
+    const user = await this.prisma.user.findFirst({
+      where: { email: dto.email },
+    });
+
+    if (user) throw new BadRequestException(ERROR.EMAIL_EXISTS);
+
     this.prisma.user
       .create({
         data: {
@@ -39,12 +45,6 @@ export class UserService {
       .then((newUser) => {
         delete newUser.password;
         return newUser;
-      })
-      .catch((error) => {
-        if (error.code === 'P2002') {
-          return new BadRequestException(ERROR.EMAIL_EXISTS);
-        }
-        throw new BadRequestException(error);
       });
   }
 
