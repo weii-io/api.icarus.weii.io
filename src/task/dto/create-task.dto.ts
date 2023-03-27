@@ -1,5 +1,5 @@
 import {
-  IsDate,
+  IsDateString,
   IsEmail,
   IsNotEmpty,
   IsNumber,
@@ -19,7 +19,7 @@ export class CreateTaskDto {
   description: string;
 
   @IsOptional()
-  @IsDate()
+  @IsDateString()
   dueDate: Date;
 
   @IsNotEmpty()
