@@ -123,7 +123,7 @@ describe('Task Module (e2e)', () => {
         .spec()
         .get('/tasks')
         .withHeaders('cookie', user1_credential_cookie)
-        .withBody({
+        .withQueryParams({
           projectId: '$S{User1_FirstProjectId}',
         })
         .expectStatus(200)
@@ -142,7 +142,7 @@ describe('Task Module (e2e)', () => {
         .spec()
         .delete('/tasks/{id}')
         .withPathParams('id', '$S{User1_FirstProject_FirstTaskId}')
-        .withBody({
+        .withQueryParams({
           projectId: '$S{User1_FirstProjectId}',
         })
         .withHeaders('cookie', user2_credential_cookie)
@@ -181,7 +181,7 @@ describe('Task Module (e2e)', () => {
         .spec()
         .delete('/tasks/{id}')
         .withPathParams('id', '$S{User1_FirstProject_FirstTaskId}')
-        .withBody({
+        .withQueryParams({
           projectId: '$S{User1_FirstProjectId}',
         })
         .withHeaders('cookie', user1_credential_cookie)

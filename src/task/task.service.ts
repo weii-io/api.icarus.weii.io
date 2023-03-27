@@ -3,7 +3,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { CreateTaskDto, DeleteTaskByIdDto, UpdateTaskByIdDto } from './dto';
+import { CreateTaskDto, UpdateTaskByIdDto } from './dto';
 import { PrismaService } from '../prisma/prisma.service';
 import { ERROR } from '../enum';
 
@@ -62,6 +62,8 @@ export class TaskService {
   }
 
   async getTasks(userId: number, projectId: number) {
+    if (!projectId) throw new NotFoundException(ERROR.RESOURCE_NOT_FOUND);
+
     const project = await this.prisma.project.findUnique({
       where: { id: projectId },
     });
@@ -97,6 +99,8 @@ export class TaskService {
     if (!task) {
       throw new NotFoundException(ERROR.RESOURCE_NOT_FOUND);
     }
+
+    if (!projectId) throw new NotFoundException(ERROR.RESOURCE_NOT_FOUND);
 
     if (task.projectId !== projectId) {
       throw new ForbiddenException(ERROR.ACCESS_DENIED);
@@ -200,7 +204,7 @@ export class TaskService {
     });
   }
 
-  async deleteTaskById(userId: number, taskId: number, dto: DeleteTaskByIdDto) {
+  async deleteTaskById(userId: number, taskId: number, projectId: number) {
     const task = await this.prisma.task.findFirst({
       where: { id: taskId },
       include: {
@@ -213,7 +217,9 @@ export class TaskService {
       throw new NotFoundException(ERROR.RESOURCE_NOT_FOUND);
     }
 
-    if (task.projectId !== dto.projectId) {
+    if (!projectId) throw new NotFoundException(ERROR.RESOURCE_NOT_FOUND);
+
+    if (task.projectId !== projectId) {
       throw new ForbiddenException(ERROR.ACCESS_DENIED);
     }
 
