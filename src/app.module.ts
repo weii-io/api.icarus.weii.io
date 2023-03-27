@@ -21,14 +21,14 @@ import * as cors from 'cors';
 })
 export class AppModule {
   configure(consumer: MiddlewareConsumer) {
-    if (process.env.NODE_ENV !== 'prod') {
-      const options: cors.CorsOptions = {
-        origin: 'http://localhost:3000',
-        methods: ['GET', 'POST', 'PUT', 'DELETE'],
-        allowedHeaders: ['Content-Type', 'Authorization'],
-        credentials: true,
-      };
-      consumer.apply(cors(options)).forRoutes('*');
-    }
+
+    const options: cors.CorsOptions = {
+      origin: ['http://localhost:3000', 'https://icarus.weii.io'],
+      methods: ['GET', 'POST', 'PUT', 'DELETE'],
+      allowedHeaders: ['Content-Type', 'Authorization'],
+      credentials: true,
+    };
+    consumer.apply(cors(options)).forRoutes('*');
+
   }
 }
