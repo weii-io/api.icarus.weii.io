@@ -21,6 +21,7 @@ import * as cors from 'cors';
 })
 export class AppModule {
   configure(consumer: MiddlewareConsumer) {
+
     const options: cors.CorsOptions = {
       origin: ['http://localhost:3000', 'https://icarus.weii.io'],
       methods: ['GET', 'POST', 'PUT', 'DELETE'],
@@ -28,5 +29,6 @@ export class AppModule {
       credentials: true,
     };
     consumer.apply(cors(options)).forRoutes('*');
+
   }
 }
