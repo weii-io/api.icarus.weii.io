@@ -7,18 +7,13 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { TaskService } from './task.service';
 import { GetUser } from '../auth/decorator';
 import { JwtGuard } from '../auth/guard';
-import {
-  CreateTaskDto,
-  DeleteTaskByIdDto,
-  GetTaskByIdDto,
-  GetTasksDto,
-  UpdateTaskByIdDto,
-} from './dto';
+import { CreateTaskDto, UpdateTaskByIdDto } from './dto';
 
 @Controller('tasks')
 export class TaskController {
@@ -32,18 +27,21 @@ export class TaskController {
 
   @Get()
   @UseGuards(JwtGuard)
-  getTasks(@GetUser('id') userId: number, @Body() dto: GetTasksDto) {
-    return this.taskService.getTasks(userId, dto.projectId);
+  getTasks(
+    @GetUser('id') userId: number,
+    @Query('projectId', ParseIntPipe) projectId: number,
+  ) {
+    return this.taskService.getTasks(userId, projectId);
   }
 
   @Get(':id')
   @UseGuards(JwtGuard)
   getTaskById(
     @GetUser('id') userId: number,
-    @Body() dto: GetTaskByIdDto,
+    @Query('projectId') projectId: number,
     @Param('id', ParseIntPipe) taskId: number,
   ) {
-    return this.taskService.getTaskById(userId, dto.projectId, taskId);
+    return this.taskService.getTaskById(userId, projectId, taskId);
   }
 
   @Patch(':id')
@@ -60,9 +58,9 @@ export class TaskController {
   @UseGuards(JwtGuard)
   deleteTaskById(
     @GetUser('id') userId: number,
-    @Body() dto: DeleteTaskByIdDto,
+    @Query('projectId', ParseIntPipe) projectId: number,
     @Param('id', ParseIntPipe) taskId: number,
   ) {
-    return this.taskService.deleteTaskById(userId, taskId, dto);
+    return this.taskService.deleteTaskById(userId, taskId, projectId);
   }
 }
