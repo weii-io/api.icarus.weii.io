@@ -29,13 +29,13 @@ export class AuthController {
       httpOnly: true,
       sameSite: 'none',
       secure: true,
-      domain: '.weii.io',
+      domain: process.env.NODE_ENV === 'prod' ? '.weii.io' : 'localhost',
     });
     res.cookie('x-refresh', refresh_token, {
       httpOnly: true,
       sameSite: 'none',
       secure: true,
-      domain: '.weii.io',
+      domain: process.env.NODE_ENV === 'prod' ? '.weii.io' : 'localhost',
     });
     return res.send();
   }

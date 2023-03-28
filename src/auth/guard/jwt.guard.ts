@@ -42,6 +42,9 @@ export class JwtGuard extends AuthGuard('jwt') {
         'cookie',
         cookie.serialize('x-access', new_access_token, {
           httpOnly: true,
+          sameSite: 'none',
+          secure: true,
+          domain: process.env.NODE_ENV === 'prod' ? '.weii.io' : 'localhost',
         }),
       );
     }
