@@ -29,11 +29,13 @@ export class AuthController {
       httpOnly: true,
       sameSite: 'none',
       secure: true,
+      domain: '.weii.io',
     });
     res.cookie('x-refresh', refresh_token, {
       httpOnly: true,
       sameSite: 'none',
       secure: true,
+      domain: '.weii.io',
     });
     return res.send();
   }
