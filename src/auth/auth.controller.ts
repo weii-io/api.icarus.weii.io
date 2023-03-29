@@ -5,11 +5,13 @@ import {
   HttpStatus,
   Post,
   Res,
+  UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { Response } from 'express';
 import { CreateUserDto } from '../user/dto';
 import { LoginUserDto } from './dto';
+import { JwtGuard } from './guard';
 
 @Controller('auth')
 export class AuthController {
@@ -32,6 +34,25 @@ export class AuthController {
       domain: process.env.NODE_ENV === 'prod' ? '.weii.io' : 'localhost',
     });
     res.cookie('x-refresh', refresh_token, {
+      httpOnly: true,
+      sameSite: 'none',
+      secure: true,
+      domain: process.env.NODE_ENV === 'prod' ? '.weii.io' : 'localhost',
+    });
+    return res.send();
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @Post('logout')
+  @UseGuards(JwtGuard)
+  async logout(@Res() res: Response) {
+    res.clearCookie('x-access', {
+      httpOnly: true,
+      sameSite: 'none',
+      secure: true,
+      domain: process.env.NODE_ENV === 'prod' ? '.weii.io' : 'localhost',
+    });
+    res.clearCookie('x-refresh', {
       httpOnly: true,
       sameSite: 'none',
       secure: true,
