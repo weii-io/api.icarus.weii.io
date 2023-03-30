@@ -6,6 +6,7 @@ import { UserModule } from './user/user.module';
 import { ProjectModule } from './project/project.module';
 import { TaskModule } from './task/task.module';
 import * as cors from 'cors';
+import { GithubProfileModule } from './github_profile/github_profile.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import * as cors from 'cors';
     PrismaModule,
     ProjectModule,
     TaskModule,
+    GithubProfileModule,
   ],
 })
 export class AppModule {

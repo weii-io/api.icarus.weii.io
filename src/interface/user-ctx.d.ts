@@ -1,3 +1,5 @@
+import { GithubProfile } from '@prisma/client';
+
 export interface IUserCtx {
   id: number;
   username: string;
@@ -5,4 +7,5 @@ export interface IUserCtx {
   hash: string;
   firstName: string;
   lastName: string;
+  githubProfile: GithubProfile?;
 }

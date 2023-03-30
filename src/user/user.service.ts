@@ -49,8 +49,8 @@ export class UserService {
   }
 
   async updateUserById(userId: number, dto: UpdateUserByIdDto) {
-    const _user = await this.prisma.user.findFirst({ where: { id: userId } });
-    if (!_user || _user.id !== userId) {
+    const _user = await this.getUserById(userId);
+    if (_user.id !== userId) {
       return new ForbiddenException(ERROR.ACCESS_DENIED);
     }
 
@@ -68,13 +68,27 @@ export class UserService {
   }
 
   async deleteUserById(userId: number) {
-    const _user = await this.prisma.user.findFirst({ where: { id: userId } });
-
-    if (!_user) throw new NotFoundException(ERROR.RESOURCE_NOT_FOUND);
-    if (!_user || _user.id !== userId) {
+    const _user = await this.getUserById(userId);
+    if (_user.id !== userId) {
       return new ForbiddenException(ERROR.ACCESS_DENIED);
     }
 
     return this.prisma.user.delete({ where: { id: userId } });
+  }
+
+  async getUserById(userId: number) {
+    const _user = await this.prisma.user.findFirst({
+      where: { id: userId },
+      include: {
+        githubProfile: {
+          select: {
+            username: true,
+            accessToken: true,
+          },
+        },
+      },
+    });
+    if (!_user) throw new NotFoundException(ERROR.RESOURCE_NOT_FOUND);
+    return _user;
   }
 }
