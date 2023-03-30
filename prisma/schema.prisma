@@ -8,21 +8,23 @@ generator client {
 }
 
 model User {
-  id             Int       @id @default(autoincrement())
-  username       String    @unique
-  email          String    @unique
+  id             Int            @id @default(autoincrement())
+  username       String         @unique
+  email          String         @unique
   firstName      String
   lastName       String
   password       String
   projects       Project[] // Projects owned by the user
   assignedTasks  Task[] // Tasks assigned to the user
-  projectsMember Project[] @relation("ProjectMember")
+  projectsMember Project[]      @relation("ProjectMember")
+  githubProfile  GithubProfile?
 }
 
 model Project {
   id          Int     @id @default(autoincrement())
   name        String
   description String?
+  githubUrl   String?
   tasks       Task[]
   owner       User    @relation(fields: [ownerId], references: [id], onDelete: Cascade)
   ownerId     Int
@@ -39,4 +41,12 @@ model Task {
   projectId   Int
   assignee    User?     @relation(fields: [assigneeId], references: [id], onDelete: Cascade)
   assigneeId  Int?
+}
+
+model GithubProfile {
+  id          Int    @id @default(autoincrement())
+  username    String @unique
+  user        User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      Int    @unique
+  accessToken String
 }

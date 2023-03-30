@@ -1,4 +1,10 @@
-import { IsNotEmpty, IsOptional, IsString, MaxLength } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  IsUrl,
+  MaxLength,
+} from 'class-validator';
 
 export class CreateProjectDto {
   @IsNotEmpty()
@@ -9,4 +15,9 @@ export class CreateProjectDto {
   @IsString()
   @MaxLength(200)
   description?: string;
+
+  @IsOptional()
+  @IsUrl()
+  @IsString()
+  githubUrl: string;
 }

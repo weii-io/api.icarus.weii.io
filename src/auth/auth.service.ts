@@ -22,6 +22,9 @@ export class AuthService {
   async login(dto: LoginUserDto) {
     const _user = await this.prismaService.user.findFirst({
       where: { email: dto.email },
+      include: {
+        githubProfile: true,
+      },
     });
 
     if (!_user) {
@@ -42,6 +45,7 @@ export class AuthService {
         hash: _user.password,
         firstName: _user.firstName,
         lastName: _user.lastName,
+        githubProfile: _user.githubProfile,
       }),
       refresh_token: this.tokenService.generateToken(TokenType.REFRESH, {
         id: _user.id,
@@ -50,6 +54,7 @@ export class AuthService {
         hash: _user.password,
         firstName: _user.firstName,
         lastName: _user.lastName,
+        githubProfile: _user.githubProfile,
       }),
     };
   }
