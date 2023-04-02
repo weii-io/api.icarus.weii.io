@@ -6,14 +6,14 @@ import {
   Patch,
   UseGuards,
 } from '@nestjs/common';
-import { JwtGuard } from '../auth/guard';
-import { GetUser } from '../auth/decorator';
-import { IUserCtx } from '../interface';
-import { UserService } from './user.service';
-import { UpdateUserByIdDto } from './dto';
+import { UserService } from '../user.service';
+import { GetUser } from '../../auth/decorator';
+import { JwtGuard } from '../../auth/guard';
+import { IUserCtx } from '../../interface';
+import { UpdateUserByIdDto } from '../dto';
 
-@Controller('users/me')
-export class UserController {
+@Controller()
+export class MeController {
   constructor(private userService: UserService) {}
 
   @Get()

@@ -9,9 +9,9 @@ import {
 import { JwtGuard } from '../auth/guard';
 import { GetUser } from '../auth/decorator';
 import { CreateGithubProfileDto } from './dto';
-import { GithubProfileService } from './github_profile.service';
+import { GithubProfileService } from './github-profile.service';
 
-@Controller('users/me/github-profile')
+@Controller()
 export class GithubProfileController {
   constructor(private readonly githubProfileService: GithubProfileService) {}
 

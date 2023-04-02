@@ -13,7 +13,7 @@ export class JwtGuard extends AuthGuard('jwt') {
   handleRequest(err: any, user: any, _info: any, context: ExecutionContext) {
     // You can throw an exception based on either "info" or "err" arguments
     if (err || _info || !user) {
-      throw err || _info || new UnauthorizedException();
+      throw new UnauthorizedException();
     }
 
     // check if the access token is expired
