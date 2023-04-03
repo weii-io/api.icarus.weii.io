@@ -44,9 +44,10 @@ model Task {
 }
 
 model GithubProfile {
-  id          Int    @id @default(autoincrement())
-  username    String @unique
-  user        User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId      Int    @unique
-  accessToken String
+  id              Int    @id @default(autoincrement())
+  username        String @unique
+  user            User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId          Int    @unique
+  accessToken     String
+  organizationUrl String
 }

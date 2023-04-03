@@ -6,19 +6,40 @@ import { UserModule } from './user/user.module';
 import { ProjectModule } from './project/project.module';
 import { TaskModule } from './task/task.module';
 import * as cors from 'cors';
-import { GithubProfileModule } from './github_profile/github_profile.module';
+import { RouterModule } from '@nestjs/core';
+import { MeModule } from './user/me/me.module';
+import { GithubProfileModule } from './github-profile/github-profile.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    AuthModule,
     UserModule,
+    MeModule,
+    AuthModule,
     PrismaModule,
     ProjectModule,
     TaskModule,
     GithubProfileModule,
+    RouterModule.register([
+      {
+        path: 'users',
+        module: UserModule,
+        children: [
+          {
+            path: 'me',
+            module: MeModule,
+            children: [
+              {
+                path: 'github-profile',
+                module: GithubProfileModule,
+              },
+            ],
+          },
+        ],
+      },
+    ]),
   ],
 })
 export class AppModule {
@@ -26,8 +47,8 @@ export class AppModule {
     const options: cors.CorsOptions = {
       origin: ['http://localhost:3000', 'https://icarus.weii.io'],
       methods: ['GET', 'POST', 'PUT', 'DELETE'],
-      allowedHeaders: ['Content-Type', 'Authorization'],
       credentials: true,
+      allowedHeaders: ['Content-Type', 'Authorization'],
     };
     consumer.apply(cors(options)).forRoutes('*');
   }
