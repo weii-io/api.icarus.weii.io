@@ -21,14 +21,16 @@ model User {
 }
 
 model Project {
-  id          Int     @id @default(autoincrement())
-  name        String
-  description String?
-  githubUrl   String?
-  tasks       Task[]
-  owner       User    @relation(fields: [ownerId], references: [id], onDelete: Cascade)
-  ownerId     Int
-  members     User[]  @relation("ProjectMember")
+  id              Int            @id @default(autoincrement())
+  name            String
+  description     String?
+  githubRepoUrl   String?
+  tasks           Task[]
+  owner           User           @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  ownerId         Int
+  members         User[]         @relation("ProjectMember")
+  githubProfile   GithubProfile? @relation(name: "ProjectGithubProfile", fields: [githubProfileId], references: [id], onDelete: Restrict)
+  githubProfileId Int?
 }
 
 model Task {
@@ -44,10 +46,10 @@ model Task {
 }
 
 model GithubProfile {
-  id              Int    @id @default(autoincrement())
-  username        String @unique
-  user            User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId          Int    @unique
-  accessToken     String
-  organizationUrl String
+  id          Int       @id @default(autoincrement())
+  username    String    @unique
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      Int       @unique
+  accessToken String
+  projects    Project[] @relation(name: "ProjectGithubProfile")
 }

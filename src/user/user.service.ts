@@ -82,6 +82,7 @@ export class UserService {
       include: {
         githubProfile: {
           select: {
+            id: true,
             username: true,
             accessToken: true,
           },

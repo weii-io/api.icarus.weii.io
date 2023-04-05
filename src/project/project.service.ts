@@ -17,6 +17,7 @@ export class ProjectService {
       data: {
         ...dto,
         ownerId: userId,
+        githubProfileId: dto.githubProfileId || null,
       },
     });
   }
@@ -31,6 +32,7 @@ export class ProjectService {
         tasks: true,
         owner: true,
         members: true,
+        githubProfile: true,
       },
     });
 
@@ -51,6 +53,7 @@ export class ProjectService {
       include: {
         tasks: true,
         owner: true,
+        githubProfile: true,
       },
     });
   }
