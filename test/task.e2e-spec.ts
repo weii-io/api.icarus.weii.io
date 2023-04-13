@@ -149,7 +149,6 @@ describe('Task Module (e2e)', () => {
         .expectStatus(403);
     });
 
-    // TODO: should be able to update task
     it('should update the task', async () => {
       await pactum
         .spec()

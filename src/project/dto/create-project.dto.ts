@@ -1,8 +1,8 @@
 import {
   IsNotEmpty,
+  IsNumber,
   IsOptional,
   IsString,
-  IsUrl,
   MaxLength,
 } from 'class-validator';
 
@@ -17,7 +17,10 @@ export class CreateProjectDto {
   description?: string;
 
   @IsOptional()
-  @IsUrl()
+  @IsNumber()
+  githubProfileId?: number;
+
+  @IsOptional()
   @IsString()
-  githubUrl: string;
+  githubRepoUrl?: string;
 }
