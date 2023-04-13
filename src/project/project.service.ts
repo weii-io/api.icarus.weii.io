@@ -22,6 +22,10 @@ export class ProjectService {
     });
   }
 
+  // TODO: review this
+  // TODO: if the user tries to access a project connected to a github repo
+  // user must be connected to github first
+  // if user do not have a github profile they cannot view the content of the project such as project files etc
   // view project using id
   async getProjectById(userId: number, projectId: number) {
     const _project = await this.prisma.project.findFirst({
@@ -74,56 +78,6 @@ export class ProjectService {
 
     if (_project.ownerId !== userId)
       throw new ForbiddenException(ERROR.ACCESS_DENIED);
-
-    if (dto.memberEmail) {
-      const member = await this.prisma.user.findFirst({
-        where: {
-          email: dto.memberEmail,
-        },
-      });
-
-      if (!member) throw new NotFoundException(ERROR.RESOURCE_NOT_FOUND);
-
-      delete dto.memberEmail;
-      return this.prisma.project.update({
-        where: {
-          id: _project.id,
-        },
-        data: {
-          ...dto,
-          members: {
-            connect: {
-              id: member.id,
-            },
-          },
-        },
-      });
-    }
-
-    if (dto.removeMemberEmail) {
-      const member = await this.prisma.user.findFirst({
-        where: {
-          email: dto.removeMemberEmail,
-        },
-      });
-
-      if (!member) throw new NotFoundException(ERROR.RESOURCE_NOT_FOUND);
-
-      delete dto.removeMemberEmail;
-      return this.prisma.project.update({
-        where: {
-          id: _project.id,
-        },
-        data: {
-          ...dto,
-          members: {
-            disconnect: {
-              id: member.id,
-            },
-          },
-        },
-      });
-    }
 
     return this.prisma.project.update({
       where: {
