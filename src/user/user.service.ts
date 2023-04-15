@@ -90,6 +90,7 @@ export class UserService {
       },
     });
     if (!_user) throw new NotFoundException(ERROR.RESOURCE_NOT_FOUND);
+    delete _user.password;
     return _user;
   }
 }
