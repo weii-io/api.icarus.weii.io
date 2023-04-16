@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  Header,
   Param,
   ParseIntPipe,
   Patch,
@@ -28,6 +29,7 @@ export class ProjectController {
   // use should be able to view a project using id
   @Get(':id')
   @UseGuards(JwtGuard)
+  @Header('Cache-Control', 'max-age=60')
   getProjectById(
     @GetUser('id') userId: number,
     @Param('id', ParseIntPipe) projectId: number,
@@ -38,6 +40,7 @@ export class ProjectController {
   // user should be able to view all projects
   @Get()
   @UseGuards(JwtGuard)
+  @Header('Cache-Control', 'max-age=60')
   getAllProjects(@GetUser('id') userId: number) {
     return this.projectService.getAllProjects(userId);
   }
