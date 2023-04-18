@@ -22,5 +22,5 @@ export class CreateProjectDto {
 
   @IsOptional()
   @IsString()
-  githubRepoUrl?: string;
+  githubRepoSlug?: string;
 }
