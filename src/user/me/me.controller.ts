@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  Header,
   Patch,
   UseGuards,
 } from '@nestjs/common';
@@ -18,6 +19,7 @@ export class MeController {
 
   @Get()
   @UseGuards(JwtGuard)
+  @Header('Cache-Control', 'max-age=60')
   me(@GetUser() user: IUserCtx) {
     return this.userService.getUserById(user.id);
   }

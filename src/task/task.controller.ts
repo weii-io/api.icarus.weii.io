@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  Header,
   Param,
   ParseIntPipe,
   Patch,
@@ -27,6 +28,7 @@ export class TaskController {
 
   @Get()
   @UseGuards(JwtGuard)
+  @Header('Cache-Control', 'max-age=60')
   getTasks(
     @GetUser('id') userId: number,
     @Query('projectId', ParseIntPipe) projectId: number,
@@ -36,6 +38,7 @@ export class TaskController {
 
   @Get(':id')
   @UseGuards(JwtGuard)
+  @Header('Cache-Control', 'max-age=60')
   getTaskById(
     @GetUser('id') userId: number,
     @Query('projectId') projectId: number,

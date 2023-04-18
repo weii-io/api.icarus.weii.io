@@ -13,7 +13,7 @@ export class CreateProjectDto {
 
   @IsOptional()
   @IsString()
-  @MaxLength(200)
+  @MaxLength(400)
   description?: string;
 
   @IsOptional()
