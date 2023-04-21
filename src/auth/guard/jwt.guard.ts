@@ -45,7 +45,8 @@ export class JwtGuard extends AuthGuard('jwt') {
           httpOnly: true,
           sameSite: 'none',
           secure: true,
-          domain: process.env.NODE_ENV === 'prod' ? '.weii.io' : 'localhost',
+          domain:
+            process.env.NODE_ENV === 'prod' ? 'icarus.weii.io' : 'localhost',
         }),
       );
     }
