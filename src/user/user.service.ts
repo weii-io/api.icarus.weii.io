@@ -40,6 +40,7 @@ export class UserService {
           username: username,
           firstName: dto.firstName,
           lastName: dto.lastName,
+          googleProfileId: dto.googleProfileId,
         },
       })
       .then((user) => {

@@ -39,9 +39,12 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
     if (
       !_user ||
-      _user.email !== payload.email ||
-      _user.password !== payload.hash
+      _user.email !== payload.email
+      // _user.password !== payload.hash
     )
+      throw new ForbiddenException(ERROR.ACCESS_DENIED);
+
+    if (!_user.googleProfileId && _user.password !== payload.hash)
       throw new ForbiddenException(ERROR.ACCESS_DENIED);
 
     return payload;

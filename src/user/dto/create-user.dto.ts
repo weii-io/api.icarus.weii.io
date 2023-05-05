@@ -1,6 +1,7 @@
 import {
   IsEmail,
   IsNotEmpty,
+  IsOptional,
   IsString,
   IsStrongPassword,
 } from 'class-validator';
@@ -27,4 +28,8 @@ export class CreateUserDto {
   @IsNotEmpty()
   @IsString()
   confirmPassword: string;
+
+  @IsOptional()
+  @IsString()
+  googleProfileId?: string;
 }

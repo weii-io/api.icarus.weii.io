@@ -8,16 +8,17 @@ generator client {
 }
 
 model User {
-  id             Int            @id @default(autoincrement())
-  username       String         @unique
-  email          String         @unique
-  firstName      String
-  lastName       String
-  password       String
-  projects       Project[] // Projects owned by the user
-  assignedTasks  Task[] // Tasks assigned to the user
-  projectsMember Project[]      @relation("ProjectMember")
-  githubProfile  GithubProfile?
+  id              Int            @id @default(autoincrement())
+  username        String         @unique
+  email           String         @unique
+  firstName       String
+  lastName        String
+  password        String
+  googleProfileId String?
+  projects        Project[] // Projects owned by the user
+  assignedTasks   Task[] // Tasks assigned to the user
+  projectsMember  Project[]      @relation("ProjectMember")
+  githubProfile   GithubProfile?
 }
 
 model Project {

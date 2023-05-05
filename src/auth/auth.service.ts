@@ -31,11 +31,18 @@ export class AuthService {
       throw new NotFoundException(ERROR.INVALID_CREDENTIALS);
     }
 
-    const passwordMatch = await argon2.verify(_user.password, dto.password);
+    if (!dto.googleProfileId) {
+      // not google login
+      const passwordMatch = await argon2.verify(_user.password, dto.password);
 
-    if (!passwordMatch) {
-      throw new NotFoundException(ERROR.INVALID_CREDENTIALS);
+      if (!passwordMatch) {
+        throw new NotFoundException(ERROR.INVALID_CREDENTIALS);
+      }
     }
+
+    // is google login
+    if (dto.googleProfileId !== _user.googleProfileId)
+      throw new NotFoundException(ERROR.INVALID_CREDENTIALS);
 
     return {
       access_token: this.tokenService.generateToken(TokenType.ACCESS, {
