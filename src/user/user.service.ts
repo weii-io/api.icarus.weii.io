@@ -32,7 +32,7 @@ export class UserService {
 
     if (user) throw new BadRequestException(ERROR.EMAIL_EXISTS);
 
-    this.prisma.user
+    return this.prisma.user
       .create({
         data: {
           email: dto.email,
@@ -40,11 +40,12 @@ export class UserService {
           username: username,
           firstName: dto.firstName,
           lastName: dto.lastName,
+          googleProfileId: dto.googleProfileId,
         },
       })
-      .then((newUser) => {
-        delete newUser.password;
-        return newUser;
+      .then((user) => {
+        delete user.password;
+        return user;
       });
   }
 

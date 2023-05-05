@@ -39,7 +39,9 @@ export class AuthController {
       secure: true,
       domain: process.env.NODE_ENV === 'prod' ? 'icarus.weii.io' : 'localhost',
     });
-    return res.send();
+    return res.send({
+      login: true,
+    });
   }
 
   @HttpCode(HttpStatus.OK)
