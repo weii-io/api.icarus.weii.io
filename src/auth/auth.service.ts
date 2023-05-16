@@ -51,6 +51,10 @@ export class AuthService {
         throw new NotFoundException(ERROR.INVALID_CREDENTIALS);
     }
 
+    // is google login
+    if (dto.googleProfileId !== _user.googleProfileId)
+      throw new NotFoundException(ERROR.INVALID_CREDENTIALS);
+
     return {
       access_token: this.tokenService.generateToken(TokenType.ACCESS, {
         id: _user.id,

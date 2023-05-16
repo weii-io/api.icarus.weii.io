@@ -32,13 +32,13 @@ export class AuthController {
       httpOnly: true,
       sameSite: 'none',
       secure: true,
-      domain: process.env.NODE_ENV === 'prod' ? '.weii.io' : 'localhost',
+      domain: process.env.NODE_ENV === 'prod' ? 'icarus.weii.io' : 'localhost',
     });
     res.cookie('x-refresh', refresh_token, {
       httpOnly: true,
       sameSite: 'none',
       secure: true,
-      domain: process.env.NODE_ENV === 'prod' ? '.weii.io' : 'localhost',
+      domain: process.env.NODE_ENV === 'prod' ? 'icarus.weii.io' : 'localhost',
     });
     return res.send({
       login: true,
@@ -54,13 +54,13 @@ export class AuthController {
       httpOnly: true,
       sameSite: 'none',
       secure: true,
-      domain: process.env.NODE_ENV === 'prod' ? '.weii.io' : 'localhost',
+      domain: process.env.NODE_ENV === 'prod' ? 'icarus.weii.io' : 'localhost',
     });
     res.clearCookie('x-refresh', {
       httpOnly: true,
       sameSite: 'none',
       secure: true,
-      domain: process.env.NODE_ENV === 'prod' ? '.weii.io' : 'localhost',
+      domain: process.env.NODE_ENV === 'prod' ? 'icarus.weii.io' : 'localhost',
     });
     return res.send({
       logout: true,
