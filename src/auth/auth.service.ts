@@ -40,6 +40,17 @@ export class AuthService {
       }
     }
 
+    // update user google profile id
+    if (dto.googleProfileId) {
+      if (!_user.googleProfileId)
+        await this.userService.updateUserById(_user.id, {
+          googleProfileId: dto.googleProfileId,
+        });
+      // is google login
+      else if (dto.googleProfileId !== _user.googleProfileId)
+        throw new NotFoundException(ERROR.INVALID_CREDENTIALS);
+    }
+
     // is google login
     if (dto.googleProfileId !== _user.googleProfileId)
       throw new NotFoundException(ERROR.INVALID_CREDENTIALS);
