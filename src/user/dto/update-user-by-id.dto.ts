@@ -15,4 +15,8 @@ export class UpdateUserByIdDto {
   @IsString()
   @IsOptional()
   password?: string;
+
+  @IsString()
+  @IsOptional()
+  googleProfileId?: string;
 }

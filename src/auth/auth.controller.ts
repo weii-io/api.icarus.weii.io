@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Header,
   HttpCode,
   HttpStatus,
   Post,
@@ -46,6 +47,7 @@ export class AuthController {
 
   @HttpCode(HttpStatus.OK)
   @Post('logout')
+  @Header('Cache-Control', 'no-cache, no-store, must-revalidate')
   @UseGuards(JwtGuard)
   async logout(@Res() res: Response) {
     res.clearCookie('x-access', {
@@ -60,6 +62,8 @@ export class AuthController {
       secure: true,
       domain: process.env.NODE_ENV === 'prod' ? '.weii.io' : 'localhost',
     });
-    return res.send();
+    return res.send({
+      logout: true,
+    });
   }
 }

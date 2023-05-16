@@ -40,9 +40,16 @@ export class AuthService {
       }
     }
 
-    // is google login
-    if (dto.googleProfileId !== _user.googleProfileId)
-      throw new NotFoundException(ERROR.INVALID_CREDENTIALS);
+    // update user google profile id
+    if (dto.googleProfileId) {
+      if (!_user.googleProfileId)
+        await this.userService.updateUserById(_user.id, {
+          googleProfileId: dto.googleProfileId,
+        });
+      // is google login
+      else if (dto.googleProfileId !== _user.googleProfileId)
+        throw new NotFoundException(ERROR.INVALID_CREDENTIALS);
+    }
 
     return {
       access_token: this.tokenService.generateToken(TokenType.ACCESS, {
